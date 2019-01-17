@@ -1,0 +1,50 @@
+
+swagger: "2.0"
+
+info:
+  version: 1.0.0
+  title: Image Processing Service
+
+basePath: /v0.1
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  /pedestrian_detector:
+    post:
+      parameters:
+        - in: body
+          name: image
+          required: true
+          schema:
+            $ref: '#/definitions/Image'
+      responses:
+        '201':
+          description: 'Image proccesed'
+          schema:
+            $ref: '#/definitions/Image_Proccessed'
+
+definitions:
+  Image:
+    type: object
+    required:
+      - encoded_image
+      - image_name
+    properties:
+      encoded_image:
+        type: string
+      image_name:
+        type: string
+  Image_Proccessed:
+    type: object
+    required:
+      - processed_image
+      - image_name
+    properties:
+      encoded_image:
+        type: string
+      image_name:
+        type: string
