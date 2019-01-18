@@ -6,9 +6,9 @@ from services.image_processor import ImageProcessor
 
 def test_new_image(shared_datadir):
     """
-    GIVEN a User model
-    WHEN a new User is created
-    THEN check the email, hashed_password, authenticated, and role fields are defined correctly
+    GIVEN an image file
+    WHEN a new ImageProcessor object is created
+    THEN check the encoded image and image name are defined correctly
     """
     image_file = open(shared_datadir / "pedestrian.jpg", "rb")
     encoded_image = base64.b64encode(image_file.read())
