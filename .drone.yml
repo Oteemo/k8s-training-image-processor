@@ -28,9 +28,9 @@ pipeline:
     template: >
       {{#success build.status}}
         Build {{build.number}} succeeded. Good job.
-        More info found here {{ build.link }}
+        Link ->  {{ build.link }}
       {{else}}
         Build {{build.number}} failed. Fix me please.
-        More info found here {{ build.link }}
+        Link -> {{ build.link }}
       {{/success}}
     
