@@ -6,6 +6,7 @@ pipeline:
       FLASK_ENV: testing
       FLASK_TESTING: "True"
     commands:
+    - apt-get update && apt-get install -y libgtk2.0-dev 
     - cd src
     - pip install -r requirements.txt
     - python -m pytest
