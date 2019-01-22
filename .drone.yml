@@ -1,18 +1,13 @@
 pipeline:
 
-  install requirements:
-    image: python:3.7-slim
-    commands:
-    - cd src
-    - pip install -r requirements.txt
-
-  test:
+  install requirements and test:
     image: python:3.7-slim
     environment:
       FLASK_ENV: testing
       FLASK_TESTING: "True"
     commands:
     - cd src
+    - pip install -r requirements.txt
     - python -m pytest
 
   publish:
