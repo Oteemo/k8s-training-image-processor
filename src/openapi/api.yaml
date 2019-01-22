@@ -15,6 +15,7 @@ produces:
 paths:
   /pedestrian_detector:
     post:
+      operationId: api.pedestrian_detector.post
       parameters:
         - in: body
           name: image
@@ -26,6 +27,14 @@ paths:
           description: 'Image proccesed'
           schema:
             $ref: '#/definitions/Image_Proccessed'
+  /healthcheck:
+    get:
+      operationId: api.healthcheck.get
+      responses:
+        '200':
+          description: 'health endpoint response'
+          schema:
+            $ref: '#/definitions/Healthcheck'
 
 definitions:
   Image:
@@ -47,4 +56,14 @@ definitions:
       encoded_image:
         type: string
       image_name:
+        type: string
+  Healthcheck:
+    type: object
+    required:
+      - status
+      - date
+    properties:
+      status:
+        type: string
+      date:
         type: string
