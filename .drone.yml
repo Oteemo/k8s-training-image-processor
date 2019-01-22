@@ -1,24 +1,16 @@
-kind: pipeline
-name: default
+pipeline:
 
-steps:
-- name: install requirements
-  image: python:3.7.2-stretch
-  commands:
-  - cd src
-  - pip install -r requirements.txt
+  install requirements and test:
+    image: python:3.7.2-stretch
+    environment:
+      FLASK_ENV: testing
+      FLASK_TESTING: "True"
+    commands:
+    - cd src
+    - pip install -r requirements.txt
+    - python -m pytest
 
-- name: test
-  image: python:3.7.2-stretch
-  environment:
-    FLASK_ENV: testing
-    FLASK_TESTING: True
-  commands:
-  - cd src
-  - python -m pytest
-
-- name: publish
-  publish_server_alpine:
+  publish:
     image: plugins/docker
     repo: iahmad/k8s-image-processor
     dockerfile: Dockerfile
@@ -28,16 +20,17 @@ steps:
       branch: master
       event: push
 
-- name: slack
-  image: plugins/slack
-  settings:
+  slack:
+    image: plugins/slack
     webhook: https://hooks.slack.com/services/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
     channel: k8s-image-processor
     username: drone
     template: >
       {{#success build.status}}
-        build {{build.number}} succeeded. Good job.
+        Build {{build.number}} succeeded. Good job.
+        {{ build.link }}
       {{else}}
-        build {{build.number}} failed. Fix me please.
+        Build {{build.number}} failed. Fix me please.
+        {{ build.link }}
       {{/success}}
     
