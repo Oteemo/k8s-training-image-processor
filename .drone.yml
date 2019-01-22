@@ -10,7 +10,7 @@ pipeline:
     image: python:3.7.2-stretch
     environment:
       FLASK_ENV: testing
-      FLASK_TESTING: True
+      FLASK_TESTING: "True"
     commands:
     - cd src
     - python -m pytest
