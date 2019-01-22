@@ -27,10 +27,10 @@ pipeline:
     username: drone
     template: >
       {{#success build.status}}
-        build {{build.number}} succeeded. Good job.
-        {{ build.link }}
+        Build {{build.number}} succeeded. Good job.
+        More info found here {{ build.link }}
       {{else}}
-        build {{build.number}} failed. Fix me please.
-        {{ build.link }}
+        Build {{build.number}} failed. Fix me please.
+        More info found here {{ build.link }}
       {{/success}}
     
