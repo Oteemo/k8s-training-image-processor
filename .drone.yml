@@ -11,14 +11,14 @@ pipeline:
     - python -m pytest
 
   publish:
-      image: plugins/docker
-      repo: iahmad/k8s-image-processor
-      dockerfile: Dockerfile
-      secrets: [ docker_username, docker_password ]
-      tags: ${DRONE_COMMIT_SHA}
-      when:
-        branch: master
-        event: push
+    image: plugins/docker
+    repo: iahmad/k8s-image-processor
+    dockerfile: Dockerfile
+    secrets: [ docker_username, docker_password ]
+    tags: ${DRONE_COMMIT_SHA}
+    when:
+      branch: master
+      event: push
 
   slack:
     image: plugins/slack
