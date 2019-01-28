@@ -1,36 +1,75 @@
 pipeline:
 
-  install requirements and test:
+  install requirements:
+    image: python:3.7.2-stretch
+    commands:
+    - export PYTHONPATH=$${PWD}/src
+    - pip install virtualenv
+    - virtualenv venv
+    - ./venv/bin/pip install -r src/requirements.txt
+
+  test:
     image: python:3.7.2-stretch
     environment:
-      FLASK_ENV: testing
-      FLASK_TESTING: "True"
+      - FLASK_ENV=testing
+      - FLASK_TESTING="True"
     commands:
-    - cd src
-    - pip install -r requirements.txt
-    - python -m pytest
+    - export PYTHONPATH=$${PWD}/src
+    - ./venv/bin/python -m pytest
 
-  publish:
-    image: plugins/docker
-    repo: iahmad/k8s-image-processor
-    dockerfile: Dockerfile
-    secrets: [ docker_username, docker_password ]
-    tags: ${DRONE_COMMIT_SHA}
+  build_and_publish_to_dev:
+    image: oteemo/aws-docker-cli:v0.1
+    environment:
+      # Replace this with the url to your ecr repo
+      - ECR_REPO=020522090443.dkr.ecr.us-east-1.amazonaws.com/student-0/k8s-image-processor
+    commands:
+      - eval $(aws ecr get-login --no-include-email --region=us-east-1)
+      - docker build -t 
+        $${ECR_REPO}:dev-${DRONE_COMMIT_SHA:0:8} .
+      - docker push 
+        $${ECR_REPO}:dev-${DRONE_COMMIT_SHA:0:8}
+      - docker rmi 
+        $${ECR_REPO}:dev-${DRONE_COMMIT_SHA:0:8}
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     when:
       branch: master
-      event: push
 
-  slack:
-    image: plugins/slack
-    webhook: https://hooks.slack.com/services/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
-    channel: k8s-image-processor
-    username: drone
-    template: >
-      {{#success build.status}}
-        Build {{build.number}} succeeded. Good job.
-        {{ build.link }}
-      {{else}}
-        Build {{build.number}} failed. Fix me please.
-        {{ build.link }}
-      {{/success}}
+  publish_to_prod:
+    image: oteemo/aws-docker-cli:v0.1
+    environment:
+      # Replace this with the url to your ecr repo
+      - ECR_REPO=020522090443.dkr.ecr.us-east-1.amazonaws.com/student-0/k8s-image-processor
+    commands:
+      - eval $(aws ecr get-login --no-include-email --region=us-east-1)
+      - docker pull 
+        $${ECR_REPO}:dev-${DRONE_COMMIT_SHA:0:8}
+      - docker tag 
+        $${ECR_REPO}:dev-${DRONE_COMMIT_SHA:0:8} 
+        $${ECR_REPO}:prod-${DRONE_COMMIT_SHA:0:8}
+      - docker push 
+        $${ECR_REPO}:prod-${DRONE_COMMIT_SHA:0:8}
+      - docker rmi 
+        $${ECR_REPO}:dev-${DRONE_COMMIT_SHA:0:8} 
+        $${ECR_REPO}:prod-${DRONE_COMMIT_SHA:0:8}
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    when:
+      branch: master
+
+  # slack:
+  #   image: plugins/slack
+  #   webhook: https://hooks.slack.com/services/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
+  #   channel: k8s-image-processor
+  #   username: drone
+  #   template: >
+  #     {{#success build.status}}
+  #       Build {{build.number}} succeeded. Good job.
+  #       {{ build.link }}
+  #     {{else}}
+  #       Build {{build.number}} failed. Fix me please.
+  #       {{ build.link }}
+  #     {{/success}}
     
