@@ -20,8 +20,8 @@ pipeline:
   build_and_publish_to_dev:
     image: oteemo/aws-docker-cli:v0.1
     environment:
-      # Replace this with the url to your ecr repo
-      - ECR_REPO=020522090443.dkr.ecr.us-east-1.amazonaws.com/student-0/k8s-image-processor
+      # Replace this with the uri to your ecr repo
+      - ECR_REPO=<ecr repo uri>:<tag>
     commands:
       - eval $(aws ecr get-login --no-include-email --region=us-east-1)
       - docker build -t 
@@ -39,8 +39,8 @@ pipeline:
   publish_to_prod:
     image: oteemo/aws-docker-cli:v0.1
     environment:
-      # Replace this with the url to your ecr repo
-      - ECR_REPO=020522090443.dkr.ecr.us-east-1.amazonaws.com/student-0/k8s-image-processor
+      # Replace this with the uri to your ecr repo
+      - ECR_REPO=<ecr repo uri>:<tag>
     commands:
       - eval $(aws ecr get-login --no-include-email --region=us-east-1)
       - docker pull 
