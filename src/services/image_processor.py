@@ -59,6 +59,7 @@ class ImageProcessor(object):
 
         # draw the final bounding boxes
         for (xA, yA, xB, yB) in pick:
+            #Change the numbers below this line      (255,255,0)
             cv2.rectangle(image, (xA, yA), (xB, yB), (0, 0, 255), 2)
         encoded_image = self.image_encode(image)
         return(str(encoded_image.decode("utf-8")))
